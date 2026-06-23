@@ -1,3 +1,5 @@
+[![Build and Push on DockerHub](https://github.com/Blasteed/DO-Agent/actions/workflows/docker-build-and-publish.yaml/badge.svg)](https://github.com/Blasteed/DO-Agent/actions/workflows/docker-build-and-publish.yaml)
+
 # Azure DevOps Agent
 
 A lightweight, self-hosted Azure DevOps build agent based on **Linux** — available across multiple distributions and variants:
