@@ -2,7 +2,7 @@
 # Exit immediately if any command returns a non-zero exit status
 set -e
 
-# Validation: Ensure the agent is already running avoiding starting again the installation
+# Validation: Ensure the agent is already installed avoiding starting again the installation
 if [ -f "$PWD/.agent" ]; then
   echo "Agent already configured, starting"
 
@@ -38,7 +38,7 @@ unset DO_PAT
 # Required by Microsoft to bypass the block preventing the agent from running as root
 export AGENT_ALLOW_RUNASROOT="1"
 
-# Parse the download URL from the JSON response using jq
+# Agent download URL and download logic
 DOA_DOWNLOAD_URL='https://download.agent.dev.azure.com/agent/4.274.1/vsts-agent-linux-x64-4.274.1.tar.gz'
 
 if [ -z "$DOA_DOWNLOAD_URL" ] || [ "$DOA_DOWNLOAD_URL" == "null" ]; then
@@ -66,4 +66,4 @@ echo -e "\n2. Registering and configuring the agent against Azure DevOps...\n"
 
 echo -e "\n3. Agent successfully configured. Launching worker listener...\n"
 # Switch execution to the listener loop (keeps the container alive and waiting for pipeline jobs)
-exec ./run.sh "$@" # Questo aggiunge la possibilità di ereditare i parametri dalla shell, se scrivo "--once" quando do il run, lo passa allo script "run.sh" all'interno del container
+exec ./run.sh "$@" # This adds the ability to inherit parameters from the shell; if I type “--once” when I run the script, it passes that to the “run.sh” script inside the container
