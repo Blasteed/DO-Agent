@@ -15,7 +15,7 @@ A lightweight, self-hosted Azure DevOps build agent based on **Linux** — avail
 
 ## 🚀 Quick Start
 
-Launch the agent as a background service with automatic restart:
+Launch the agent with automatic restart:
 
 ### Debian Trixie
 
@@ -65,8 +65,6 @@ The container automatically configures and registers the agent at boot using the
 ---
 
 ## 💓 Healthcheck
-
-Since these images are stripped down and minimal, standard process utilities like `pgrep` or `ps` might not be available in the container's user space. 
 
 To ensure accurate container health monitoring without adding unnecessary overhead or packages, the native Linux `/proc` filesystem virtual directory is used to safely track the core `Agent.Listener` lifecycle. A `start_period` of 3 minutes is recommended to allow the `./start.sh` entrypoint script to safely download updates and register with Azure DevOps before monitoring begins.
 
