@@ -1,0 +1,52 @@
+name: Run Trivy Scan
+
+on:
+  workflow_run:
+    workflows: ["Build and Push on DockerHub"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  trivy-scan:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner on Noble Image
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:noble-latest'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-noble-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy vulnerability scanner on Trixie Image
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-trixie-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy Noble scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-noble-results.sarif'
+          category: 'noble-image'
+
+      - name: Upload Trivy Trixie scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-trixie-results.sarif'
+          category: 'trixie-image'
