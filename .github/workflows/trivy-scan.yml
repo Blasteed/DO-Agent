@@ -43,11 +43,11 @@ jobs:
       - name: Upload Trivy Noble scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-noble-results.sarif'
-          category: 'noble-image'
+          sarif_file: trivy-noble-results.sarif
+          category: noble-image
 
       - name: Upload Trivy Trixie scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-trixie-results.sarif'
-          category: 'trixie-image'
+          sarif_file: trivy-trixie-results.sarif
+          category: trixie-image
