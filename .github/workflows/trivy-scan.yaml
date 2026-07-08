@@ -1,4 +1,4 @@
-name: Run Security Scan
+name: Run Trivy Scan
 
 on:
   workflow_dispatch:
@@ -24,19 +24,19 @@ jobs:
         run: mkdir -p security-reports
 
       - name: Scan Ubuntu Noble Image
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'docker.io/karfee111/do-agent:noble-latest'
           format: 'json'
-          output: 'security-reports/noble-vulnerabilities.json'
+          output: '.github/security-reports/noble-vulnerabilities.json'
           severity: 'HIGH,CRITICAL'
 
       - name: Scan Debian Trixie Image
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
           format: 'json'
-          output: 'security-reports/trixie-vulnerabilities.json'
+          output: '.github/security-reports/trixie-vulnerabilities.json'
           severity: 'HIGH,CRITICAL'
 
       - name: Commit and Push JSON Reports
