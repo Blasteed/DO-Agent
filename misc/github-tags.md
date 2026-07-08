@@ -4,7 +4,7 @@
 
 [![Pulls](https://img.shields.io/docker/pulls/karfee111/do-agent?logo=docker&logoColor=white&color=1d63ed&label=Pulls&maxAge=0)](https://hub.docker.com/r/karfee111/do-agent)
 
-[![DOA Version](https://img.shields.io/badge/dynamic/json?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0ndXRmLTgnPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48dGl0bGU%2BSWNvbi1kZXZvcHMtMjYxPC90aXRsZT48cGF0aCBkPSJNMTcsNHY5Ljc0bC00LDMuMjgtNi4yLTIuMjZWMTdMMy4yOSwxMi40MWwxMC4yMy44VjQuNDRabS0zLjQxLjQ5TDcuODUsMVYzLjI5TDIuNTgsNC44NCwxLDYuODd2NC42MWwyLjI2LDFWNi41N1oiIGZpbGw9IiNGRkZGRkYiIC8%2BPC9zdmc%2B&color=0078d4&label=DOA%20Version&query=%24.meta.agent_version&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fbuild-metadata.json&maxAge=0)]()
+[![Latest DOA Version](https://img.shields.io/badge/dynamic/json?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0ndXRmLTgnPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48dGl0bGU%2BSWNvbi1kZXZvcHMtMjYxPC90aXRsZT48cGF0aCBkPSJNMTcsNHY5Ljc0bC00LDMuMjgtNi4yLTIuMjZWMTdMMy4yOSwxMi40MWwxMC4yMy44VjQuNDRabS0zLjQxLjQ5TDcuODUsMVYzLjI5TDIuNTgsNC44NCwxLDYuODd2NC42MWwyLjI2LDFWNi41N1oiIGZpbGw9IiNGRkZGRkYiIC8%2BPC9zdmc%2B&color=0078d4&label=Latest%20DOA%20Version&query=%24.doa_version&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fbuild-metadata.json&maxAge=0)]()
 
 [![Noble Image](https://img.shields.io/docker/image-size/karfee111/do-agent/noble-latest?logo=ubuntu&logoColor=white&color=e95420&label=Noble%20Image&maxAge=0)](https://hub.docker.com/r/karfee111/do-agent/tags)
 
