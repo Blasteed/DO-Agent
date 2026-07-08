@@ -1,4 +1,4 @@
-name: Run Trivy Scan
+name: Run Security Scan
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  trivy-scan:
+  security-scan:
     permissions:
       contents: read
       security-events: write
@@ -21,37 +21,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Trivy CLI
-        run: |
-          sudo apt-get update && sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
-          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb-release -sc) main" | sudo tee /etc/apt/sources.list.di/trivy.list
-          sudo apt-get update && sudo apt-get install -y trivy
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Scan Ubuntu Noble Image
-        run: |
-          trivy image \
-            --format sarif \
-            --severity HIGH,CRITICAL \
-            --output trivy-noble-results.sarif \
-            docker.io/karfee111/do-agent:noble-latest
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: docker.io/karfee111/do-agent:noble-latest
+          sarif: 'scout-noble-results.sarif'
+          only-severities: 'high,critical'
 
       - name: Scan Debian Trixie Image
-        run: |
-          trivy image \
-            --format sarif \
-            --severity HIGH,CRITICAL \
-            --output trivy-trixie-results.sarif \
-            docker.io/karfee111/do-agent:trixie-latest
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: docker.io/karfee111/do-agent:trixie-latest
+          sarif: 'scout-trixie-results.sarif'
+          only-severities: 'high,critical'
 
-      - name: Upload Trivy Noble results
+      - name: Upload Noble results to GitHub
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: trivy-noble-results.sarif
-          category: noble-image
+          sarif_file: 'scout-noble-results.sarif'
+          category: 'noble-image'
 
-      - name: Upload Trivy Trixie results
+      - name: Upload Trixie results to GitHub
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: trivy-trixie-results.sarif
-          category: trixie-image
+          sarif_file: 'scout-trixie-results.sarif'
+          category: 'trixie-image'
