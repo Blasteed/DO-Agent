@@ -1,4 +1,4 @@
-name: Update DockerHub Overview
+name: Update DockerHub Repo Overview
 
 on:
   push:
