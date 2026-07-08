@@ -65,14 +65,14 @@ jobs:
           jq -n \
             --arg noble "$NOBLE_COUNT" \
             --arg trixie "$TRIXIE_COUNT" \
-            '{noble_cves: $noble, trixie_cves: $trixie}' > .github/workflows/security-metadata.json
+            '{noble_cves: $noble, trixie_cves: $trixie}' > misc/security-metadata.json
 
       - name: Git Push Reports and Metadata
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add security-reports/*.txt .github/workflows/security-metadata.json
+          git add security-reports/*.txt misc/security-metadata.json
           
           if ! git diff --cached --quiet; then
             git commit -m "Update security reports and metadata"
