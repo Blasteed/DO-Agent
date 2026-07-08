@@ -1,4 +1,4 @@
-name: Run Trivy Scan
+name: Run Security Scan
 
 on:
   workflow_dispatch:
@@ -8,38 +8,41 @@ on:
       - completed
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  trivy-scan:
-    permissions:
-      contents: read
-      security-events: write
+  security-scan:
     runs-on: ubuntu-latest
     
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - image_tag: 'noble-latest'
-            category_name: 'noble-image'
-          - image_tag: 'trixie-latest'
-            category_name: 'trixie-image'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: 'docker.io/karfee111/do-agent:${{ matrix.image_tag }}'
-          format: 'sarif'
-          output: 'trivy-${{ matrix.image_tag }}-results.sarif'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create reports directory
+        run: mkdir -p security-reports
+
+      - name: Scan Ubuntu Noble Image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:noble-latest'
+          format: 'json'
+          output: 'security-reports/noble-vulnerabilities.json'
           severity: 'HIGH,CRITICAL'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+      - name: Scan Debian Trixie Image
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          sarif_file: 'trivy-${{ matrix.image_tag }}-results.sarif'
-          category: '${{ matrix.category_name }}'
+          image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
+          format: 'json'
+          output: 'security-reports/trixie-vulnerabilities.json'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Commit and Push JSON Reports
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add security-reports/
+          git commit -m "Update security scan reports" || echo "No changes to commit"
+          git push origin main
