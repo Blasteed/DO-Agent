@@ -1,0 +1,45 @@
+name: Run Security Scan
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build and Push on DockerHub"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  trivy-scan:
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_tag: 'noble-latest'
+            category_name: 'noble-image'
+          - image_tag: 'trixie-latest'
+            category_name: 'trixie-image'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:${{ matrix.image_tag }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: '${{ matrix.category_name }}'
