@@ -23,20 +23,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner on Noble Image
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'docker.io/karfee111/do-agent:noble-latest'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
+          format: 'sarif'
           output: 'trivy-noble-results.sarif'
           severity: 'CRITICAL,HIGH'
 
       - name: Run Trivy vulnerability scanner on Trixie Image
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
+          format: 'sarif'
           output: 'trivy-trixie-results.sarif'
           severity: 'CRITICAL,HIGH'
 
