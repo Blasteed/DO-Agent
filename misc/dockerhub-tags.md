@@ -6,4 +6,4 @@
 
 [![Trixie Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=debian&logoColor=white&color=a81d33&label=Trixie%20CVEs&query=%24.trixie_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/trixie-vulns.txt)
 
-[![RHEL Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=redhat&logoColor=white&color=a81d33&label=RHEL%20CVEs&query=%24.rhel_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/rhel-vulns.txt)
+[![RHEL Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=redhat&logoColor=white&color=e5141f&label=RHEL%20CVEs&query=%24.rhel_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/rhel-vulns.txt)

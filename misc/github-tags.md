@@ -2,7 +2,7 @@
 
 [![Trivy Scan](https://img.shields.io/github/actions/workflow/status/Blasteed/DO-Agent/.github%2Fworkflows%2Ftrivy-scan.yaml?logo=github&logoColor=white&label=Trivy%20scan&maxAge=0)]()
 
-[![Pulls](https://img.shields.io/docker/pulls/karfee111/do-agent?logo=docker&logoColor=white&color=1d63ed&label=Pulls&maxAge=0)](https://hub.docker.com/r/karfee111/do-agent)
+[![Pulls](https://img.shields.io/docker/pulls/karfee111/do-agent?logo=docker&logoColor=white&color=1d63ed&label=Pulls&maxAge=0&cacheBuster=1783589431)](https://hub.docker.com/r/karfee111/do-agent)
 
 [![Latest DOA Version](https://img.shields.io/badge/dynamic/json?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0ndXRmLTgnPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDE4IDE4Ij48dGl0bGU%2BSWNvbi1kZXZvcHMtMjYxPC90aXRsZT48cGF0aCBkPSJNMTcsNHY5Ljc0bC00LDMuMjgtNi4yLTIuMjZWMTdMMy4yOSwxMi40MWwxMC4yMy44VjQuNDRabS0zLjQxLjQ5TDcuODUsMVYzLjI5TDIuNTgsNC44NCwxLDYuODd2NC42MWwyLjI2LDFWNi41N1oiIGZpbGw9IiNGRkZGRkYiIC8%2BPC9zdmc%2B&color=0078d4&label=Latest%20DOA%20Version&query=%24.doa_version&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fbuild-metadata.json&maxAge=0)]()
 
@@ -16,4 +16,4 @@
 
 [![Trixie Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=debian&logoColor=white&color=a81d33&label=Trixie%20CVEs&query=%24.trixie_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/trixie-vulns.txt)
 
-[![RHEL Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=redhat&logoColor=white&color=a81d33&label=RHEL%20CVEs&query=%24.rhel_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/rhel-vulns.txt)
+[![RHEL Vulnerabilities](https://img.shields.io/badge/dynamic/json?logo=redhat&logoColor=white&color=e5141f&label=RHEL%20CVEs&query=%24.rhel_cves&url=https%3A%2F%2Fraw.githubusercontent.com%2FBlasteed%2FDO-Agent%2Fmain%2Fmisc%2Fsecurity-metadata.json&maxAge=0)](https://github.com/Blasteed/DO-Agent/blob/main/security-reports/rhel-vulns.txt)
