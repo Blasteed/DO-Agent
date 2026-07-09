@@ -8,6 +8,7 @@ A lightweight, self-hosted Azure DevOps build agent based on **Linux** — avail
 | :--- | :--- | :---: | :--- |
 | `trixie-*` | `debian:trixie-slim` | 76 | Debian-based build |
 | `noble-*` | `ubuntu:noble` (24.04 LTS) | 74 | Ubuntu-based build |
+| `rhel-*` | `redhat/ubi10-minimal` (RHEL 10) | 74 | RHEL-based build |
 
 > **Note:** These images are intentionally minimal — they include only what is required to run the Azure DevOps agent (`git`, `curl`, `ca-certificates`, and .NET runtime libraries). No Python, Node.js, or other build tools are pre-installed. See [Extending the image](#-extending-the-image) below.
 
@@ -41,6 +42,19 @@ docker run -d \
   -e DO_POOL="your_pool_name" \
   -e DO_AGENT_NAME="DOA-Agent" \
   karfee111/do-agent:noble-latest
+```
+
+### RHEL UBI 10
+
+```bash
+docker run -d \
+  --name doa-agent-prod \
+  --restart unless-stopped \
+  -e DO_URL="https://dev.azure.com/your-organization" \
+  -e DO_PAT="your_personal_access_token" \
+  -e DO_POOL="your_pool_name" \
+  -e DO_AGENT_NAME="DOA-Agent" \
+  karfee111/do-agent:rhel-latest
 ```
 
 Monitor startup logs and registration:
@@ -95,7 +109,7 @@ docker run -d \
 ```yaml
 services:
   azure-agent:
-    image: karfee111/do-agent:trixie-latest
+    image: karfee111/do-agent:noble-latest
     container_name: doa-agent-prod
     restart: unless-stopped
     environment:
@@ -115,7 +129,7 @@ services:
 docker compose up -d
 ```
 
-> **Ubuntu variant:** replace the tag with `noble-latest` to use the Ubuntu 24.04 based image.
+> **Variants:** replace the tag with `trixie-latest` for Debian 13, or `rhel-latest` to use the RHEL 10 based image.
 
 ---
 
@@ -136,6 +150,8 @@ docker run -d \
 ---
 
 ## 🔧 Extending the Image
+
+> **RHEL variant note:** If you extend the `rhel-latest` image, remember that UBI Minimal uses `microdnf` as its package manager instead of `apt` (e.g., `RUN microdnf install -y python3 && microdnf clean all`).
 
 These images ship with the bare minimum to run the agent. If your pipelines require additional tools (Python, Node.js, .NET SDK, etc.), extend the image with your own Dockerfile:
 
@@ -199,11 +215,12 @@ services:
 ## 🏷️ Tag Convention
 
 ```
-trixie-{agent_version}.{build_number}       # Debian Trixie
-noble-{agent_version}.{build_number}        # Ubuntu 24.04 LTS
+trixie-{agent_version}.{build_number}     # Debian Trixie
+noble-{agent_version}.{build_number}      # Ubuntu 24.04 LTS
+rhel-{agent_version}.{build_number}       # RHEL 10 UBI Minimal
 ```
 
-Examples: `trixie-4.274.1.1`, `noble-4.274.1.1`
+Examples: `trixie-5.275.0.1`, `noble-5.275.0.1`, `rhel-5.275.0.1`
 
 ### `latest` Tags
 
@@ -211,6 +228,5 @@ Examples: `trixie-4.274.1.1`, `noble-4.274.1.1`
 | :--- | :--- |
 | `trixie-latest` | most recent `trixie-*` build |
 | `noble-latest` | most recent `noble-*` build |
+| `rhel-latest` | most recent `rhel-*` build |
 | `latest` | global alias pointing to the most recent `noble-*` build |
-
-Floating tags always resolve to the most recent build for their respective distribution or the global default.
