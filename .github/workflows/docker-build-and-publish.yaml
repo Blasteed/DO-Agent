@@ -7,47 +7,76 @@ on:
     paths:
       - 'debian-trixie/**'
       - 'ubuntu-noble/**'
+      - 'rhel-ubi/**'
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            debian: 'debian-trixie/**'
+            ubuntu: 'ubuntu-noble/**'
+            rhel: 'rhel-ubi/**'
+
+    outputs:
+      debian: ${{ steps.filter.outputs.debian }}
+      ubuntu: ${{ steps.filter.outputs.ubuntu }}
+      rhel: ${{ steps.filter.outputs.rhel }}
+
   build-and-push:
+    needs: changes
     runs-on: ubuntu-latest
     
     strategy:
       fail-fast: false
-      
       matrix:
         include:
           - directory: debian-trixie
             tag_name: trixie
             is_global_latest: false
+            run_job: ${{ needs.changes.outputs.debian }}
           
           - directory: ubuntu-noble
             tag_name: noble
-            is_global_latest: true # Will apply to global :latest tag
+            is_global_latest: true
+            run_job: ${{ needs.changes.outputs.ubuntu }}
+
+          - directory: rhel-ubi
+            tag_name: rhel
+            is_global_latest: false
+            run_job: ${{ needs.changes.outputs.rhel }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        if: matrix.run_job == 'true'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        if: matrix.run_job == 'true'
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: matrix.run_job == 'true'
 
       - name: Extract Version number from Dockerfile
         id: get_version
         run: |
           VERSION=$(grep -i 'LABEL Version=' ./${{ matrix.directory }}/Dockerfile | head -n 1 | cut -d'"' -f2)
-          
           if [ -z "$VERSION" ]; then
-            VERSION="4.274.1.999"
+            VERSION="9.999.9.999"
           fi
-          
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+        if: matrix.run_job == 'true'
 
       - name: Docker meta
         id: meta
@@ -55,14 +84,10 @@ jobs:
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/do-agent
           tags: |
-            # Clean tag with release (e.g. do-agent:noble-0.0.0.0)
             type=raw,value=${{ matrix.tag_name }}-${{ steps.get_version.outputs.version }}
-            
-            # Sepcific latest tag (e.g. do-agent:noble-latest)
             type=raw,value=${{ matrix.tag_name }}-latest
-            
-            # Global latest (only for global latest, e.g. do-agent:latest)
             type=raw,value=latest,enable=${{ matrix.is_global_latest }}
+        if: matrix.run_job == 'true'
 
       - name: Build and Push
         uses: docker/build-push-action@v6
@@ -73,3 +98,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        if: matrix.run_job == 'true'

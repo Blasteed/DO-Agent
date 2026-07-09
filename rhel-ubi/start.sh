@@ -39,7 +39,7 @@ unset DO_PAT
 export AGENT_ALLOW_RUNASROOT="1"
 
 # Agent download URL and download logic
-DOA_DOWNLOAD_URL='https://download.agent.dev.azure.com/agent/4.274.1/vsts-agent-linux-x64-4.274.1.tar.gz'
+DOA_DOWNLOAD_URL='https://download.agent.dev.azure.com/agent/5.275.0/vsts-agent-linux-x64-5.275.0.tar.gz'
 
 if [ -z "$DOA_DOWNLOAD_URL" ] || [ "$DOA_DOWNLOAD_URL" == "null" ]; then
   echo "error: agent download url empty or not configured" >&2

@@ -13,6 +13,51 @@ permissions:
 jobs:
   trivy-scan:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - base_os: debian-trixie
+            tag: trixie
+          - base_os: ubuntu-noble
+            tag: noble
+          - base_os: rhel-ubi
+            tag: rhel
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup workspace directories
+        run: mkdir -p security-reports
+
+      - name: Scan "${{ matrix.base_os }}" Image (Temp JSON)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:${{ matrix.tag }}-latest'
+          format: 'json'
+          output: '${{ matrix.tag }}-temp.json'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Scan "${{ matrix.base_os }}" Image (Table TXT)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'docker.io/karfee111/do-agent:${{ matrix.tag }}-latest'
+          format: 'table'
+          output: 'security-reports/${{ matrix.tag }}-vulns.txt'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload temporary scan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-outputs-${{ matrix.tag }}
+          path: |
+            ${{ matrix.tag }}-temp.json
+            security-reports/${{ matrix.tag }}-vulns.txt
+
+  aggregate-and-push:
+    needs: trivy-scan
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
@@ -21,51 +66,33 @@ jobs:
       - name: Setup workspace directories
         run: |
           mkdir -p security-reports
+          mkdir -p misc
 
-      - name: Scan Ubuntu Noble Image (Temp JSON)
-        uses: aquasecurity/trivy-action@v0.36.0
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
-          image-ref: 'docker.io/karfee111/do-agent:noble-latest'
-          format: 'json'
-          output: 'noble-temp.json'
-          severity: 'HIGH,CRITICAL'
+          pattern: trivy-outputs-*
+          merge-multiple: true
 
-      - name: Scan Ubuntu Noble Image (Table TXT)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: 'docker.io/karfee111/do-agent:noble-latest'
-          format: 'table'
-          output: 'security-reports/noble-vulns.txt'
-          severity: 'HIGH,CRITICAL'
-
-      - name: Scan Debian Trixie Image (Temp JSON)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
-          format: 'json'
-          output: 'trixie-temp.json'
-          severity: 'HIGH,CRITICAL'
-
-      - name: Scan Debian Trixie Image (Table TXT)
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: 'docker.io/karfee111/do-agent:trixie-latest'
-          format: 'table'
-          output: 'security-reports/trixie-vulns.txt'
-          severity: 'HIGH,CRITICAL'
+      - name: Organize report files
+        run: |
+          mv *-vulns.txt security-reports/ 2>/dev/null || true
 
       - name: Generate Security Metadata JSON
         run: |
           NOBLE_COUNT=$(jq '[.Results[].Vulnerabilities // [] | length] | add' noble-temp.json || echo 0)
           TRIXIE_COUNT=$(jq '[.Results[].Vulnerabilities // [] | length] | add' trixie-temp.json || echo 0)
+          RHEL_COUNT=$(jq '[.Results[].Vulnerabilities // [] | length] | add' rhel-temp.json || echo 0)
 
           [ -z "$NOBLE_COUNT" ] || [ "$NOBLE_COUNT" = "null" ] && NOBLE_COUNT=0
           [ -z "$TRIXIE_COUNT" ] || [ "$TRIXIE_COUNT" = "null" ] && TRIXIE_COUNT=0
+          [ -z "$RHEL_COUNT" ] || [ "$RHEL_COUNT" = "null" ] && RHEL_COUNT=0
 
           jq -n \
             --arg noble "$NOBLE_COUNT" \
             --arg trixie "$TRIXIE_COUNT" \
-            '{noble_cves: $noble, trixie_cves: $trixie}' > misc/security-metadata.json
+            --arg rhel "$RHEL_COUNT" \
+            '{noble_cves: $noble, trixie_cves: $trixie, rhel_cves: $rhel}' > misc/security-metadata.json
 
       - name: Git Push Reports and Metadata
         run: |
@@ -75,7 +102,7 @@ jobs:
           git add security-reports/*.txt misc/security-metadata.json
           
           if ! git diff --cached --quiet; then
-            git commit -m "Update security reports and metadata"
+            git commit -m "Update security reports and metadata [skip ci]"
             git push origin main
           else
             echo "No commit to push."
