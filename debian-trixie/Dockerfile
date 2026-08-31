@@ -1,11 +1,11 @@
 FROM debian:trixie-slim
 
 LABEL Name="do-agent"
-LABEL Version="5.275.0.1"
+LABEL Version="5.278.0.1"
 
 LABEL org.opencontainers.image.title="do-agent"
-LABEL org.opencontainers.image.version="trixie-5.275.0.1"
-LABEL org.opencontainers.doa.version="linux-x64-5.275.0"
+LABEL org.opencontainers.image.version="trixie-5.278.0.1"
+LABEL org.opencontainers.doa.version="linux-x64-5.278.0"
 
 # Prevent interactive prompts during package installation (e.g., timezone selection)
 ENV DEBIAN_FRONTEND=noninteractive

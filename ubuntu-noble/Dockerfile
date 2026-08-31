@@ -1,11 +1,11 @@
 FROM ubuntu:noble
 
 LABEL Name="do-agent"
-LABEL Version="5.275.0.1"
+LABEL Version="5.278.0.1"
 
 LABEL org.opencontainers.image.title="do-agent"
-LABEL org.opencontainers.image.version="noble-5.275.0.1"
-LABEL org.opencontainers.doa.version="linux-x64-5.275.0"
+LABEL org.opencontainers.image.version="noble-5.278.0.1"
+LABEL org.opencontainers.doa.version="linux-x64-5.278.0"
 
 # Update repository lists and install native dependencies required by the agent and Git
 RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
